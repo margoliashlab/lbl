@@ -48,7 +48,6 @@ def read(fname):
         raise IOError("lbl: Unable to read file %s" %fname)
     return np.array([(l, sta, sto) for l, (sta, sto) in zip(labels, times)],
                     dtype=dtype)
-def)
 
 def find_seq(lbl_rec, sequence):
     '''returns the onset and offset times of substring 'sequence'
