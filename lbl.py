@@ -13,34 +13,36 @@ import re
 __version__ = '0.1.1'
 
 def read(fname):
-    '''reads in a lbl file named fname to a list'''
-    lines = open(fname, 'r').readlines()[7:]
-    if len(lines) == 0:
-        raise ValueError('This lbl file is empty')
-    stringpairs = [x.split()[::2] for x in lines]
-    lbl = [(pair[0], pair[1]) for pair in stringpairs if len(pair)==2]
-    labels = []
-    times = []
-    while len(lbl) > 0:
-        start, label = lbl.pop(0)
-        import pdb;pdb.set_trace()
-        if len(label) > 2 and '-0' in label:
-            labels.append(label[:-2])
-            #find and pop end time
-            matches = (i for i, (stop, offlabel)
-                       in enumerate(lbl)
-                       if offlabel == label[:-2] + '-1')
-            stopidx = next(matches, None)
-            if stopidx is not None:
-                stop = lbl.pop(stopidx)[0]
-            else:
-                stop = start
-            times.append([start, stop])
-        else:  # no associated offset
-            labels.append(label)
-            times.append([start, start])
-    dtype = [('name', 'a' + str(max([len(x) for x in labels]))),
-             ('start', float), ('stop', float)]
+    '''reads in a lbl file named fname to a numpy structured array'''
+    try:
+        lines = open(fname, 'r').readlines()[7:]
+        if len(lines) == 0:
+            raise ValueError('This lbl file is empty')
+        stringpairs = [x.split()[::2] for x in lines]
+        lbl = [(pair[0], pair[1]) for pair in stringpairs if len(pair)==2]
+        labels = []
+        times = []
+
+        while len(lbl) > 0:
+            start, label = lbl.pop(0)
+            import pdb;pdb.set_trace()
+            if len(label) > 2 and '-0' in label:
+                labels.append(label[:-2])
+                #find and pop end time
+                matches = (i for i, (stop, offlabel)
+                           in enumerate(lbl)
+                           if offlabel == label[:-2] + '-1')
+                stopidx = next(matches, None)
+                if stopidx is not None:
+                    stop = lbl.pop(stopidx)[0]
+                else:
+                    stop = start
+                times.append([start, stop])
+            else:  # no associated offset
+                labels.append(label)
+                times.append([start, start])
+        dtype = [('name', 'a' + str(max([len(x) for x in labels]))),
+                 ('start', float), ('stop', float)]
 
     except:
         raise IOError("lbl: Unable to read file %s" %fname)
