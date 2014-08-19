@@ -18,11 +18,12 @@ def read(fname):
     if len(lines) == 0:
         raise ValueError('This lbl file is empty')
     stringpairs = [x.split()[::2] for x in lines]
-    lbl = [(float(x), y) for x, y in stringpairs]
+    lbl = [(pair[0], pair[1]) for pair in stringpairs if len(pair)==2]
     labels = []
     times = []
     while len(lbl) > 0:
         start, label = lbl.pop(0)
+        import pdb;pdb.set_trace()
         if len(label) > 2 and '-0' in label:
             labels.append(label[:-2])
             #find and pop end time
@@ -40,9 +41,12 @@ def read(fname):
             times.append([start, start])
     dtype = [('name', 'a' + str(max([len(x) for x in labels]))),
              ('start', float), ('stop', float)]
+
+    except:
+        raise IOError("lbl: Unable to read file %s" %fname)
     return np.array([(l, sta, sto) for l, (sta, sto) in zip(labels, times)],
                     dtype=dtype)
-
+def)
 
 def find_seq(lbl_rec, sequence):
     '''returns the onset and offset times of substring 'sequence'
