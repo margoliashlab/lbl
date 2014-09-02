@@ -25,7 +25,6 @@ def read(fname):
 
         while len(lbl) > 0:
             start, label = lbl.pop(0)
-            import pdb;pdb.set_trace()
             if len(label) > 2 and '-0' in label:
                 labels.append(label[:-2])
                 #find and pop end time
